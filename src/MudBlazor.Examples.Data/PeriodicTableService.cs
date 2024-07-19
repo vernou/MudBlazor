@@ -46,4 +46,28 @@ public class PeriodicTableService : IPeriodicTableService
 
         return elements.Where(elm => (elm.Sign + elm.Name).Contains(search, StringComparison.InvariantCultureIgnoreCase));
     }
+
+    public Task<(int, IEnumerable<Element>)> GetElements(string? search, string? sortBy, string? sortDirection, int skip, int take)
+    {
+        var elements = _table?.ElementGroups?.SelectMany(g => g.Elements ?? []).ToList() ?? [];
+
+        var query = elements.AsEnumerable();
+        if(!string.IsNullOrEmpty(search))
+        {
+            query = query.Where(e => e.Name?.Contains(search, StringComparison.InvariantCultureIgnoreCase) ?? false);
+        }
+
+        if(!string.IsNullOrEmpty(sortBy))
+        {
+            if(sortBy == "name")
+            {
+                query = sortDirection == "Descending" ?
+                    query.OrderByDescending(e => e.Name) :
+                    query.OrderBy(e => e.Name);
+            }
+        }
+        var count = query.Count();
+        var items = query.Skip(skip).Take(take).ToList();
+        return Task.FromResult<(int, IEnumerable<Element>)>((count, items));
+    }
 }

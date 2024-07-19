@@ -9,4 +9,6 @@ public interface IPeriodicTableService
     Task<IEnumerable<Element>> GetElements();
 
     Task<IEnumerable<Element>> GetElements(string search);
+
+    Task<(int, IEnumerable<Element>)> GetElements(string? search, string? sortBy, string? sortDirection, int skip, int take);
 }

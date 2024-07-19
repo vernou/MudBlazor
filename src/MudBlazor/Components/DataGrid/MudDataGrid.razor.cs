@@ -589,7 +589,7 @@ namespace MudBlazor
 
         /// <summary>
         /// A RenderFragment that will be used as a placeholder when the Virtualize component is asynchronously loading data.
-        /// This placeholder is displayed for each item in the data source that is yet to be loaded. Useful for presenting a loading indicator 
+        /// This placeholder is displayed for each item in the data source that is yet to be loaded. Useful for presenting a loading indicator
         /// in a data grid row while the actual data is being fetched from the server.
         /// </summary>
         [Parameter]
@@ -885,7 +885,7 @@ namespace MudBlazor
         /// <remarks>
         /// The function accepts a <see cref="GridStateVirtualize{T}"/> with current sorting, filtering, and pagination parameters.
         /// Then, return a <see cref="GridData{T}"/> with a list of values, and the total (unpaginated) items count in <see cref="GridData{T}.TotalItems"/>.
-        /// This property is used when you need to display a list without a paginator, 
+        /// This property is used when you need to display a list without a paginator,
         /// but with loading data from the server as the scroll position changes.
         /// </remarks>
         [Parameter]
