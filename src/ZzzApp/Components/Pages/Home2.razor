@@ -1,0 +1,157 @@
+﻿@* @page "/dd"
+@inject ISnackbar Snackbar
+
+
+<MudTable Items="@_selectedTeam.TeamMembers" Dense="true" CanCancelEdit="true" HorizontalScrollbar="true" Breakpoint="Breakpoint.None">
+    <HeaderContent>
+        <MudTh>Role</MudTh>
+        <MudTh>Name</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Role">@context.Role</MudTd>
+        <MudTd DataLabel="Name">@context.DisplayName</MudTd>
+    </RowTemplate>
+    <RowEditingTemplate>
+        <MudTd DataLabel="Role">@context.Role</MudTd>
+        <MudTd DataLabel="Name">
+            @if (context.Role == "ResponsibleAdvisor")
+            {
+                <MudAutocomplete T="SalesProcessParty"
+                @bind-Value="@context"
+                @ref="_responsibleAdvisorAutocomplete"
+                Validation=@(async () => await _teamMemberValidator.ValidatePropertyValueAsync(context, "PartyId"))
+                For="@(() => context)"
+                ToStringFunc="@(x => x?.DisplayName)"
+                SearchFunc="GetEmployees"
+                Variant="Variant.Outlined"
+                Margin="Margin.Dense" />
+            }
+
+            @if (context.Role == "SupportingAdvisor")
+            {
+                <MudAutocomplete T="SalesProcessParty"
+                @bind-Value="@context"
+                @ref="_supportingAdvisorAutocomplete"
+                For="@(() => context)"
+                Immediate="false"
+                Clearable="true"
+                ResetValueOnEmptyText="true"
+                ToStringFunc="@(x => x?.DisplayName)"
+                SearchFunc="GetEmployees"
+                Variant="Variant.Outlined"
+                Margin="Margin.Dense" />
+            }
+        </MudTd>
+    </RowEditingTemplate>
+</MudTable>
+
+
+@code {
+
+
+
+    private TeamMemberValidator _teamMemberValidator = new();
+    private CustomerMemberValidator _customerMemberValidator = new();
+
+    private CustomerTeamValidator _selectedTeamValidator = new();
+    private CustomerTeamViewModel _selectedTeam = new();
+    //private MudForm? _form;
+
+    private MudAutocomplete<SalesProcessParty>? _responsibleAdvisorAutocomplete;
+    private MudAutocomplete<SalesProcessParty>? _supportingAdvisorAutocomplete;
+    private MudAutocomplete<SalesProcessParty>? _responsibleAdminAutocomplete;
+    private MudAutocomplete<SalesProcessParty>? _supportingAdminAutocomplete;
+
+    public class SalesProcessPartyContainer
+    {
+        public SalesProcessParty? SalesProcessParty { get; set; }
+    }
+
+    protected override void OnInitialized()
+    {
+        _selectedTeam = new()
+        {
+            TeamMembers = new List<SalesProcessPartyContainer>()
+            {
+                new SalesProcessPartyContainer(){
+                    SalesProcessParty = new SalesProcessParty() {
+                        PartyId = Guid.NewGuid(),
+                        FirstName = "Lead",
+                        LastName = "Leader",
+                        Role = "ResponsibleAdvisor"
+                    }
+                },
+                new SalesProcessPartyContainer(){
+                    SalesProcessParty = new SalesProcessParty()
+                    {
+                        PartyId = Guid.NewGuid(),
+                        FirstName = "Support",
+                        LastName = "Supporter",
+                        Role = "SupportingAdvisor"
+                    }
+                }
+            },
+            CustomerMembers = new List<SalesProcessParty>()
+            {
+                new(){
+                    PartyId = Guid.NewGuid(),
+                    FirstName = "Customer",
+                    LastName = "Contact",
+                    Role = "CustomerContact"
+                }
+            }
+        };
+
+        base.OnInitialized();
+    }
+
+    private async Task<IEnumerable<SalesProcessParty>> GetEmployees(string searchText, System.Threading.CancellationToken token)
+    {
+        if (string.IsNullOrEmpty(searchText) || string.IsNullOrWhiteSpace(searchText))
+            return new List<SalesProcessParty>();
+
+        await Task.Delay(20);
+
+        var p1 = parties.Where(x => !_selectedTeam.TeamMembers.Select(y => y.PartyId).Contains(x.PartyId)).ToList();
+        var p2 = p1.Where(x => x.DisplayName.Contains(searchText)).ToList();
+
+        var persons = parties.Where(x => !_selectedTeam.TeamMembers.Select(y => y.PartyId).Contains(x.PartyId) && x.DisplayName.Contains(searchText)).ToList();
+        return persons;
+    }
+
+
+    private IList<SalesProcessParty> parties = new List<SalesProcessParty>()
+    {
+        new()
+        {
+            PartyId = Guid.NewGuid(),
+            FirstName = "Person",
+            LastName = "One",
+        },
+        new()
+        {
+            PartyId = Guid.NewGuid(),
+            FirstName = "Person",
+            LastName = "Two",
+        },
+        new()
+        {
+            PartyId = Guid.NewGuid(),
+            FirstName = "Person",
+            LastName = "Three",
+        },
+        new()
+        {
+            PartyId = Guid.NewGuid(),
+            FirstName = "Person",
+            LastName = "Four",
+        },
+        new()
+        {
+            PartyId = Guid.NewGuid(),
+            FirstName = "Person",
+            LastName = "Five",
+        }
+    };
+
+} *@

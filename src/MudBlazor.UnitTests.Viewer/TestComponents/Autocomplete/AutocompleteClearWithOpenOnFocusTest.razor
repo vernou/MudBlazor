@@ -1,0 +1,44 @@
+﻿<MudPopoverProvider></MudPopoverProvider>
+
+<MudAutocomplete T="string"
+    @bind-Value="selected1"
+    SearchFunc="@Search1"
+    ResetValueOnEmptyText
+    Clearable="true"
+    OpenOnFocus="false" />
+<MudText Typo="Typo.body1">Count: @count1</MudText>
+
+<MudAutocomplete T="string"
+    @bind-Value="selected2"
+    SearchFunc="@Search2"
+    ResetValueOnEmptyText
+    Clearable="true"
+    OpenOnFocus="true" />
+<MudText Typo="Typo.body1">Count: @count2</MudText>
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => {count1 = 0; count2 = 0;})">
+    Clear
+</MudButton>
+
+@code {
+    public int count1 = 0;
+    public int count2 = 0;
+    public string selected1 = "One";
+    public string selected2 = "Two";
+
+    private IEnumerable<string> _items = new List<string> { "One", "Two", "Three" };
+
+    public Task<IEnumerable<string>> Search1(string value, CancellationToken token)
+    {
+        count1++;
+        StateHasChanged();
+        return Task.FromResult(_items);
+    }
+
+    public Task<IEnumerable<string>> Search2(string value, CancellationToken token)
+    {
+        count2++;
+        StateHasChanged();
+        return Task.FromResult(_items);
+    }
+}

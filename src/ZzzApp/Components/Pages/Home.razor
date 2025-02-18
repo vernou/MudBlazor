@@ -1,0 +1,10 @@
+﻿@page "/"
+
+<MudTextField @bind-Value="TextValue" Required="true" Label="Standard" Variant="Variant.Text" Margin="Margin.Dense"></MudTextField>
+<a href="google.com">ddd</a>
+
+<p>V: (@TextValue) E</p>
+
+@code {
+    public string TextValue { get; set; } = "";
+}
